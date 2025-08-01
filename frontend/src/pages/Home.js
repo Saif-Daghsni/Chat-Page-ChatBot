@@ -3,7 +3,7 @@ import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 import Layout from '../components/layout';
 import '../styles/Home.css'
 import { CiCircleInfo } from "react-icons/ci";
-//salam
+//salam ahla bik
 const Home = () => {
   // Données fixes pour les donut charts (facilement adaptables avec le backend)
   const costData = [
