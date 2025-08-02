@@ -3,9 +3,7 @@ import PropTypes from "prop-types";
 import "./UserProfile.css";
 import { FaUserCircle } from "react-icons/fa";
 
-const UserProfile = ({ id, selected, onClick,name, lastMessage }) => {
-
-
+const UserProfile = ({ id, selected, onClick, name, lastMessage, time }) => {
   return (
     <div
       className={selected ? "UserProfile-inactive" : "UserProfile-active"}
@@ -18,9 +16,26 @@ const UserProfile = ({ id, selected, onClick,name, lastMessage }) => {
       <div className="UserProfile-details">
         <div className="UserProfile-details-user">
           <label htmlFor="">{name}</label>
-          <p>1h</p>
+          <p>
+            {time ? (
+              <p>
+                {time.value}{" "}
+                {time.type === "minutes"
+                  ? "min"
+                  : time.type === "heures"
+                  ? "h"
+                  : "j"}
+              </p>
+            ) : (
+              <p>—</p>
+            )}
+          </p>
         </div>
-        <p>{lastMessage}</p>
+        <p>
+          {lastMessage.length > 30
+            ? lastMessage.slice(0, 30) + "..."
+            : lastMessage}
+        </p>
       </div>
     </div>
   );

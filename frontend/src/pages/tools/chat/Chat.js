@@ -8,7 +8,6 @@ import { FaComments, FaUserCircle } from "react-icons/fa";
 import { handleError, handleSuccess } from "../../../utils";
 
 const Chat = (props) => {
-  const [message, setMessage] = useState("");
   const [getmessage, setGetMessage] = useState([]);
   const messagesEndRef = useRef(null);
 
@@ -81,28 +80,24 @@ const Chat = (props) => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
   }, [getmessage, props.selecteduser]);
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/GetConversations", {
-          method: "GET",
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        });
-        const data = await response.json();
-        if (data.error) {
-          return handleError(data.error);
-        }
-        setGetMessage(data);
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-        handleError("Erreur lors de la récupération des messages");
-      }
-    };
 
-    fetchMessages();
-  }, []);
+  const calculateTime = (timestamp) => {
+    const now = new Date();
+    const sentTime = new Date(timestamp);
+    const diffMs = now - sentTime;
+
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffMinutes < 60) {
+      return { value: diffMinutes, type: "minutes" };
+    } else if (diffHours < 24) {
+      return { value: diffHours, type: "heures" };
+    } else {
+      return { value: diffDays, type: "jours" };
+    }
+  };
 
   return (
     <div className="chat-all">
@@ -123,39 +118,57 @@ const Chat = (props) => {
 
       <div className="chat-container">
         <div className="chat-messages">
-          {props.selecteduser.length !== 0 ? (
-            <>
-              {getmessage.map((conversation) => {
-                if (
-                  conversation.members.includes(props.selecteduser._id) &&
-                  conversation.members.includes(props.user._id)
-                ) {
-                  return conversation.messages.map((message, index) => {
+          {props.selecteduser ? (
+            (() => {
+              const conversation = getmessage.find(
+                (conv) =>
+                  conv.members.includes(props.selecteduser._id) &&
+                  conv.members.includes(props.user._id)
+              );
+
+              if (conversation) {
+                return conversation.messages.length > 0 ? (
+                  conversation.messages.map((message, index) => {
+                    const time = calculateTime(message.timestamp);
                     return message.senderId === props.user._id ? (
                       <FirstUser
                         key={index}
                         message={message.content}
                         timestamp={message.timestamp}
+                        time={time}
                       />
                     ) : (
                       <SecondUser
                         key={index}
                         message={message.content}
                         timestamp={message.timestamp}
+                        time={time}
                       />
                     );
-                  });
-                } else {
-                  return null;
-                }
-              })}
-            </>
+                  })
+                ) : (
+                  <div className="chat-placeholder">
+                    <FaComments size={200} className="chat-placeholder-icon" />
+                    <p>
+                      Sélectionnez un utilisateur pour démarrer une conversation
+                    </p>
+                  </div>
+                );
+              } else {
+                return (
+                  <div className="chat-placeholder">
+                    <FaComments size={200} className="chat-placeholder-icon" />
+                    <p>
+                      Sélectionnez un utilisateur pour démarrer une conversation
+                    </p>
+                  </div>
+                );
+              }
+            })()
           ) : (
             <div className="chat-placeholder">
               <FaComments size={200} className="chat-placeholder-icon" />
-              <p className="">
-                Sélectionnez un utilisateur pour démarrer une conversation
-              </p>
+              <p>Sélectionnez un utilisateur pour démarrer une conversation</p>
             </div>
           )}
 

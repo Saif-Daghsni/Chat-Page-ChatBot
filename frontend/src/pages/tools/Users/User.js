@@ -11,8 +11,7 @@ const User = (props) => {
   const [usersMessages, setUsersMessages] = useState([]);
 
   const handleGetTheLastMessages = () => {
-    const token = localStorage.getItem("token"); // or sessionStorage, wherever you store it
-    console.log("🔑 Token:", token);
+    const token = localStorage.getItem("token"); 
 
     fetch(`http://localhost:5000/GetLastMessages`, {
       headers: {
@@ -33,7 +32,7 @@ const User = (props) => {
 
   useEffect(() => {
     handleGetTheLastMessages();
-  }, [props.user._id,props.message]);
+  }, [props.user._id, props.message]);
 
   useEffect(() => {
     const result = props.users.filter(
@@ -45,7 +44,25 @@ const User = (props) => {
       return handleError("Utilisateur non trouvé");
     }
     setFilteredUsers(result);
-  }, [researh, props.users,props.message]);
+  }, [researh, props.users, props.message]);
+
+  const calculateTime = (timestamp) => {
+    const now = new Date();
+    const sentTime = new Date(timestamp);
+    const diffMs = now - sentTime;
+
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffMinutes < 60) {
+      return { value: diffMinutes, type: "minutes" };
+    } else if (diffHours < 24) {
+      return { value: diffHours, type: "heures" };
+    } else {
+      return { value: diffDays, type: "jours" };
+    }
+  };
 
   return (
     <div className="users-container">
@@ -67,8 +84,14 @@ const User = (props) => {
                 selected={selected === user._id}
                 lastMessage={
                   usersMessages.find((msg) => msg.userId === user._id)
-                    ?.lastMessage || "salam"
+                    ?.lastMessage || "Commencer une conversation"
                 }
+                time={(() => {
+                  const msg = usersMessages.find(
+                    (msg) => msg.userId === user._id
+                  );
+                  return msg ? () => {calculateTime(msg.timestamp);} : undefined;
+                })()}
                 onClick={() => {
                   setselected(user._id);
                   props.setSelecteduser(user);
@@ -85,13 +108,19 @@ const User = (props) => {
                   key={user._id}
                   id={user._id}
                   selected={selected === user._id}
+                  time={(() => {
+                    const msg = usersMessages.find(
+                      (msg) => msg.userId === user._id
+                    );
+                    return msg ? calculateTime(msg.timestamp) : undefined;
+                  })()}
                   onClick={() => {
                     setselected(user._id);
                     props.setSelecteduser(user);
                   }}
                   lastMessage={
                     usersMessages.find((msg) => msg.userId === user._id)
-                      ?.lastMessage || ""
+                      ?.lastMessage || "Commencer une conversation"
                   }
                   name={user.name}
                 />

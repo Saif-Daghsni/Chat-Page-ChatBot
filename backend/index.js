@@ -170,10 +170,12 @@ app.get("/GetLastMessages", verifyToken, async (req, res) => {
     }).populate("messages.senderId", "name email");
 
     const lastMessages = conversations.map((conversation) => {
-      const lastMessage = conversation.messages.at(-1);
+      const lastMessage =
+        conversation.messages[conversation.messages.length - 1];
       return {
-        userId: conversation.members.find((id) => id.toString() !== req.user.id),
-        lastMessage: lastMessage?.content || "",
+        userId: conversation.members.find((id) => id !== req.user.id),
+        lastMessage: lastMessage ? lastMessage.content : "",
+        timestamp: lastMessage ? lastMessage.timestamp : null,
       };
     });
 
@@ -183,7 +185,6 @@ app.get("/GetLastMessages", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 // Start server
 const PORT = process.env.PORT || 5000;

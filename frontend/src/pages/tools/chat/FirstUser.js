@@ -8,7 +8,7 @@ const FirstUser = (props) => {
         <p>{props.message}
         </p>
         <div className="FirstUser-bottom">
-          il y a 6 minutes
+            il y a {props.time.value} {props.time.type === "minutes" ? "minutes" : props.time.type === "heures" ? "heures" : "jours"}
           <BiCheckDouble
             style={{ marginLeft: "5px", color: "#ffffffff", fontSize: "14px" }}
           />
