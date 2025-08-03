@@ -11,7 +11,7 @@ const User = (props) => {
   const [usersMessages, setUsersMessages] = useState([]);
 
   const handleGetTheLastMessages = () => {
-    const token = localStorage.getItem("token"); 
+    const token = localStorage.getItem("token");
 
     fetch(`http://localhost:5000/GetLastMessages`, {
       headers: {
@@ -64,6 +64,23 @@ const User = (props) => {
     }
   };
 
+  const handleviewedmessage = (userId, currentUserId) => {
+    const token = localStorage.getItem("token");
+
+    fetch(`http://localhost:5000/viewedmessage/${userId}/${currentUserId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("✅ Viewed message updated:", data);
+      })
+      .catch((err) => console.error("❌ Update viewed message error:", err));
+  };
+
   return (
     <div className="users-container">
       <div className="input-wrapper">
@@ -90,11 +107,16 @@ const User = (props) => {
                   const msg = usersMessages.find(
                     (msg) => msg.userId === user._id
                   );
-                  return msg ? () => {calculateTime(msg.timestamp);} : undefined;
+                  return msg
+                    ? () => {
+                        calculateTime(msg.timestamp);
+                      }
+                    : undefined;
                 })()}
                 onClick={() => {
                   setselected(user._id);
                   props.setSelecteduser(user);
+                  handleviewedmessage(props.user._id, user._id);
                 }}
                 name={user.name}
               />
@@ -117,6 +139,7 @@ const User = (props) => {
                   onClick={() => {
                     setselected(user._id);
                     props.setSelecteduser(user);
+                    handleviewedmessage(props.user._id, user._id);
                   }}
                   lastMessage={
                     usersMessages.find((msg) => msg.userId === user._id)

@@ -35,7 +35,7 @@
   flex-direction: column;
 }
 
-.UserProfile-details p {
+.UserProfile-details p , .UserProfile-details span {
   color: #71717a;
   font-size: 11px;
   display: flex;
@@ -48,12 +48,8 @@
   justify-content: space-between;
   align-items: center;
 }
-.UserProfile-details-user label {
-}
 
-.UserProfile-details-user p {
-  margin: 0;      
-}
+
 
 .connected{
     background-color: #12A150;

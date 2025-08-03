@@ -5,14 +5,16 @@ import "./Chat.css";
 import FirstUser from "./FirstUser";
 import SecondUser from "./SecondUser";
 import { FaComments, FaUserCircle } from "react-icons/fa";
-import { handleError, handleSuccess } from "../../../utils";
+import { handleError } from "../../../utils";
 
 const Chat = (props) => {
   const [getmessage, setGetMessage] = useState([]);
+  const [image, setImage] = useState("");
   const messagesEndRef = useRef(null);
 
-  const handleSendMessage = () => {
-    if (props.message.trim() === "") {
+  const handleSendMessage = (e) => {
+    
+    if (e === 1 && props.message.trim() === "") {
       return handleError("Le message est vide");
     }
 
@@ -21,6 +23,7 @@ const Chat = (props) => {
       content: props.message,
       timestamp: new Date().toISOString(),
       isRead: false,
+      image: image ? image : null,
     };
 
     const MessageDetails = {
@@ -67,19 +70,12 @@ const Chat = (props) => {
         return handleError(data.error);
       }
       setGetMessage(data);
+      console.log("data :", data);
     } catch (error) {
       console.error("Error fetching messages:", error);
       handleError("Erreur lors de la récupération des messages");
     }
   };
-
-  useEffect(() => {
-    fetchMessages();
-  }, []);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-  }, [getmessage, props.selecteduser]);
 
   const calculateTime = (timestamp) => {
     const now = new Date();
@@ -98,6 +94,55 @@ const Chat = (props) => {
       return { value: diffDays, type: "jours" };
     }
   };
+  const fileInputRef = useRef(null);
+
+  const handleIconClick = () => {
+    fileInputRef.current.click(); // Trigger file input
+  };
+
+  function covertToBase64(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      const img = new Image();
+      img.src = reader.result;
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 1.0);
+
+        setImage(compressedBase64);
+      };
+    };
+
+    reader.onerror = (error) => {
+      console.log("Error: ", error);
+    };
+  }
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("Selected file:", file.name);
+      // You can now upload it or display it...
+    }
+  };
+  useEffect(() => {
+    fetchMessages();
+  }, [props.selecteduser, props.message, props.refreshReadStatus]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  }, [getmessage, props.selecteduser]);
 
   return (
     <div className="chat-all">
@@ -136,6 +181,7 @@ const Chat = (props) => {
                         message={message.content}
                         timestamp={message.timestamp}
                         time={time}
+                        isRead={message.isRead}
                       />
                     ) : (
                       <SecondUser
@@ -143,6 +189,7 @@ const Chat = (props) => {
                         message={message.content}
                         timestamp={message.timestamp}
                         time={time}
+                        isRead={message.isRead}
                       />
                     );
                   })
@@ -175,7 +222,26 @@ const Chat = (props) => {
           <div ref={messagesEndRef} />
         </div>
         <div className="chat-bottom">
-          <FaPaperclip className="chat-icon-left" />
+          <div>
+            {/* Clickable icon */}
+            <FaPaperclip
+              className="chat-icon-left"
+              onClick={(e) => {
+                handleIconClick();
+              }}
+              style={{ cursor: "pointer" }}
+            />
+
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => {
+                covertToBase64(e);
+              }}
+              style={{ display: "none" }}
+            />
+          </div>
           <input
             className="chat-input"
             type="text"
@@ -185,7 +251,7 @@ const Chat = (props) => {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault(); // optional, in case the form submits
-                handleSendMessage();
+                handleSendMessage(1);
               }
             }}
           />
@@ -194,12 +260,34 @@ const Chat = (props) => {
             <FaArrowUp
               className="chat-icon-arrow"
               onClick={() => {
-                handleSendMessage();
+                handleSendMessage(1);
               }}
             />
           </div>
         </div>
       </div>
+      {image && <div className="image-overlay"></div>}
+      {image && (
+        <div className="image-preview">
+          <div className="image-div">
+            <img src={image} alt="Preview" className="image-preview-img" />
+            <div className="image-preview-buttons">
+              <button className="image-annuler" onClick={() => setImage("")}>
+                Annuler
+              </button>
+              <button
+                className="image-preview-confirm"
+                onClick={() => {
+                  handleSendMessage();
+                  setImage("");
+                }}
+              >
+                Envoyer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

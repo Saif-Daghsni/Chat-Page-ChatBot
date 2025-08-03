@@ -1,21 +1,42 @@
-import React from 'react'
+import { React, useEffect } from "react";
 import "./SecondUser.css";
 import { BiCheckDouble } from "react-icons/bi";
+import { BiCheck } from "react-icons/bi";
 
 const SecondUser = (props) => {
+
   return (
-      <div className="SecondUser">
-        <div className="SecondUser-message">
-          <p>{props.message}</p>
-          <div className="SecondUser-bottom">
-            il y a {props.time.value} {props.time.type === "minutes" ? "minutes" : props.time.type === "heures" ? "heures" : "jours"}
+    <div className="SecondUser">
+      <div className="SecondUser-message">
+        <p>{props.message}</p>
+        <div className="SecondUser-bottom">
+          il y a {props.time.value}{" "}
+          {props.time.type === "minutes"
+            ? "minutes"
+            : props.time.type === "heures"
+            ? "heures"
+            : "jours"}
+          {props.isRead === true ? (
             <BiCheckDouble
-              style={{ marginLeft: "5px", color: "#000000", fontSize: "14px" }}
+              style={{
+                marginLeft: "5px",
+                color: "#000000ff",
+                fontSize: "14px",
+              }}
             />
-          </div>
+          ) : (
+            <BiCheck
+              style={{
+                marginLeft: "5px",
+                color: "#000000ff",
+                fontSize: "14px",
+              }}
+            />
+          )}
         </div>
       </div>
-    )
-}
+    </div>
+  );
+};
 
-export default SecondUser
+export default SecondUser;

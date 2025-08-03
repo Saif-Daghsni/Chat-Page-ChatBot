@@ -20,6 +20,7 @@ const Chat_Page = () => {
   const [users, setUsers] = useState([]);
   const [selecteduser, setSelecteduser] = useState([]);
   const [message, setMessage] = useState("");
+  const [refreshReadStatus, setRefreshReadStatus] = useState(false);
 
   useEffect(() => {}, [user?.orders]);
 
@@ -27,7 +28,6 @@ const Chat_Page = () => {
     fetch("http://localhost:5000/getAllUsers")
       .then((res) => res.json())
       .then((data) => {
-        console.log("✅ Users fetched:", data);
         if (Array.isArray(data)) {
           setUsers(data);
         } else {
@@ -89,6 +89,7 @@ const Chat_Page = () => {
                     selecteduser={selecteduser}
                     message={message}
                     setMessage={setMessage}
+  refreshReadStatus={refreshReadStatus}
                   />
                 </div>
 

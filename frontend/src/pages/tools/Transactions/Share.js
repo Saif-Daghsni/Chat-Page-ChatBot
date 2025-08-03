@@ -15,7 +15,6 @@ const Share = (props) => {
     fetch("http://localhost:5000/getAllUsers")
       .then((res) => res.json())
       .then((data) => {
-        console.log("✅ Users fetched:", data);
         if (Array.isArray(data)) {
           setUsers(data);
         } else {

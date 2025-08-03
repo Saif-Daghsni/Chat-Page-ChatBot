@@ -15,21 +15,18 @@ const UserProfile = ({ id, selected, onClick, name, lastMessage, time }) => {
 
       <div className="UserProfile-details">
         <div className="UserProfile-details-user">
-          <label htmlFor="">{name}</label>
-          <p>
-            {time ? (
-              <p>
-                {time.value}{" "}
-                {time.type === "minutes"
-                  ? "min"
-                  : time.type === "heures"
-                  ? "h"
-                  : "j"}
-              </p>
-            ) : (
-              <p>—</p>
-            )}
-          </p>
+          <label>{name}</label>
+          <span>
+            {time
+              ? `${time.value} ${
+                  time.type === "minutes"
+                    ? "min"
+                    : time.type === "heures"
+                    ? "h"
+                    : "j"
+                }`
+              : "—"}
+          </span>
         </div>
         <p>
           {lastMessage.length > 30
