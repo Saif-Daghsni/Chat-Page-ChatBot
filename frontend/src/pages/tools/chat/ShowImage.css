@@ -1,0 +1,28 @@
+.FirstUserimage {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+.FirstUserimage-bottom {
+  font-size: 10px;
+  font-weight: 100;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  padding-right: 5px;
+}
+
+.FirstUserimage-message {
+  width: 50%;
+  background-color: #4494c9;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.FirstUserimage-image{
+    border-radius: 10px;
+}

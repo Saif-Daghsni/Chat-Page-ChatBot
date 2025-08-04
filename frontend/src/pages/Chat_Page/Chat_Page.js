@@ -20,7 +20,6 @@ const Chat_Page = () => {
   const [users, setUsers] = useState([]);
   const [selecteduser, setSelecteduser] = useState([]);
   const [message, setMessage] = useState("");
-  const [refreshReadStatus, setRefreshReadStatus] = useState(false);
 
   useEffect(() => {}, [user?.orders]);
 
@@ -89,7 +88,6 @@ const Chat_Page = () => {
                     selecteduser={selecteduser}
                     message={message}
                     setMessage={setMessage}
-  refreshReadStatus={refreshReadStatus}
                   />
                 </div>
 

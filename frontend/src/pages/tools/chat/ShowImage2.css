@@ -1,0 +1,28 @@
+.SecondUserimage {
+  width: 100%;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.SecondUserimage-message {
+  width: 50%;
+  background-color: #E4E4E7;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.SecondUserimage-bottom {
+  font-size: 10px;
+  font-weight: 100;
+  color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  padding-right: 5px;
+}
+
+
+.SecondUserimage-image{
+    border-radius: 10px;
+}

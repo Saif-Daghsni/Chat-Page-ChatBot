@@ -6,6 +6,8 @@ import FirstUser from "./FirstUser";
 import SecondUser from "./SecondUser";
 import { FaComments, FaUserCircle } from "react-icons/fa";
 import { handleError } from "../../../utils";
+import ShowImage from "./ShowImage";
+import ShowImage2 from "./ShowImage2";
 
 const Chat = (props) => {
   const [getmessage, setGetMessage] = useState([]);
@@ -20,7 +22,7 @@ const Chat = (props) => {
 
     const newMessage = {
       senderId: props.user._id,
-      content: props.message,
+      content: image ? "Image sended" : props.message,
       timestamp: new Date().toISOString(),
       isRead: false,
       image: image ? image : null,
@@ -138,7 +140,7 @@ const Chat = (props) => {
   };
   useEffect(() => {
     fetchMessages();
-  }, [props.selecteduser, props.message, props.refreshReadStatus]);
+  }, [props.selecteduser, props.message ]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
@@ -175,6 +177,7 @@ const Chat = (props) => {
                 return conversation.messages.length > 0 ? (
                   conversation.messages.map((message, index) => {
                     const time = calculateTime(message.timestamp);
+                    if(message.content && message.content !== "Image sended") {
                     return message.senderId === props.user._id ? (
                       <FirstUser
                         key={index}
@@ -191,7 +194,28 @@ const Chat = (props) => {
                         time={time}
                         isRead={message.isRead}
                       />
-                    );
+                    );}
+                    else if (message.image && message.content === "Image sended") {
+                      return message.senderId === props.user._id ? (
+                        <ShowImage
+                          key={index}
+                          image={message.image}
+                          timestamp={message.timestamp}
+                          time={time}
+                          isRead={message.isRead}
+                          imageSended={message.image}
+                        />
+                      ) : (
+                        <ShowImage2
+                          key={index}
+                          image={message.image}
+                          timestamp={message.timestamp}
+                          time={time}
+                          isRead={message.isRead}
+                          imageSended={message.image}
+                        />
+                      );
+                    }
                   })
                 ) : (
                   <div className="chat-placeholder">
