@@ -11,6 +11,9 @@ import { BiShareAlt } from "react-icons/bi";
 import Share from "./Share";
 import Supprimer from "./Supprimer";
 import { FaUserCircle } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
+import { FaBoxOpen } from "react-icons/fa";
+import { FaTags } from "react-icons/fa";
 
 const AchatOptions = (props) => {
   const [details, setdetails] = useState(false);
@@ -29,7 +32,26 @@ const AchatOptions = (props) => {
         </div>
 
         <div className="option-details">
-          <label className="option-details-title">{props.user.name}</label>
+          <label className="option-details-title">
+            {props.user.name}
+            <div className="tooltip-container">
+              {props.title === "Achat" ? (
+                <>
+                  <FaShoppingCart
+                    size={16}
+                    color="white"
+                    className="details-icon"
+                  />
+                  <span className="tooltip-text">Ordre d'achat</span>
+                </>
+              ) : (
+                <>
+                  <FaTags size={16} color="white" className="details-icon" />
+                  <span className="tooltip-text">Ordre de vente</span>
+                </>
+              )}
+            </div>
+          </label>
 
           <div className="option-details-title-container">
             <div className="option-details-title-container-title">
@@ -55,26 +77,52 @@ const AchatOptions = (props) => {
               <a>{props.gamme}</a>
               <div>
                 <a>{props.quantite}</a>
-                {props.quantiteNego === 0 ? (
-                  <FaHandshake style={{ color: "#166534" }} size={20} />
-                ) : (
-                  <FaHandshake style={{ color: "#B91C1C" }} size={20} />
-                )}
+                <div className="tooltip-container">
+                  <FaHandshake
+                    style={{
+                      color: props.quantiteNego === 0 ? "#166534" : "#B91C1C",
+                    }}
+                    size={20}
+                  />
+                  <span className="tooltip-text">
+                    Quantité {props.quantiteNego === 1 ? "non " : ""}négociable
+                  </span>
+                </div>
               </div>
               <div>
                 <a>{props.prix} DT</a>
-                {props.prixNego === 0 ? (
-                  <FaHandshake style={{ color: "#166534" }} size={20} />
-                ) : (
-                  <FaHandshake style={{ color: "#B91C1C" }} size={20} />
-                )}
+                <div className="tooltip-container">
+                  <FaHandshake
+                    style={{
+                      color: props.prixNego === 0 ? "#166534" : "#B91C1C",
+                    }}
+                    size={20}
+                  />
+                  <span className="tooltip-text">
+                    Prix {props.prixNego === 1 ? "non " : ""}négociable
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       {consulter && (
-        <Consulter setConfirme={setConfirme} setConsulter={setConsulter} />
+        <Consulter
+          user={props.user}
+          setConfirme={setConfirme}
+          setConsulter={setConsulter}
+          prixNego={props.prixNego}
+          quantiteNego={props.quantiteNego}
+          type={props.type}
+          gamme={props.gamme}
+          quantite={props.quantite}
+          prix={props.prix}
+          title={props.title}
+          OwnerOrderName={props.user.name}
+          OwnerOrderId={props.user._id}
+          currentUser={props.currentUser}
+        />
       )}
 
       {confirme ? (

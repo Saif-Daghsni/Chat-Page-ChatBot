@@ -14,7 +14,7 @@ const Chat_Page = () => {
   const [vente, setvente] = useState(false);
   const [Lesvente, setLesvente] = useState(false);
   const [Lesachat, setLesachat] = useState(true);
-  const [conversation, setConversation] = useState(false);
+  const [conversation, setConversation] = useState(true);
   const [historique, sethistorique] = useState(false);
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
@@ -138,10 +138,11 @@ const Chat_Page = () => {
                             Besoin de vente
                           </button>
                         </div>
-                        {users.map((user) =>
-                          user.orders.map((order, index) => (
+                        {users.map((userOrder) =>
+                          userOrder.orders.map((order, index) => (
                             <AchatOptions
-                              user={user}
+                              user={userOrder}
+                              currentUser={user}
                               button={"Consulter"}
                               type={order.type}
                               gamme={order.gamme}
@@ -149,6 +150,7 @@ const Chat_Page = () => {
                               prix={order.prix}
                               quantiteNego={order.quantiteNego}
                               prixNego={order.prixNego}
+                              title={order.title}
                               key={index}
                             />
                           ))
@@ -210,6 +212,7 @@ const Chat_Page = () => {
                                   prixNego={order.prixNego}
                                   key={order._id}
                                   setvente={setvente}
+                                  title={order.title}
                                 />
                               ) : null
                             )}
@@ -232,6 +235,7 @@ const Chat_Page = () => {
                                   prixNego={order.prixNego}
                                   key={index}
                                   setvente={setvente}
+                                  title={order.title}
                                 />
                               ) : null
                             )}
