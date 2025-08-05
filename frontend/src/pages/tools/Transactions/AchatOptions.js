@@ -14,7 +14,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaBoxOpen } from "react-icons/fa";
 import { FaTags } from "react-icons/fa";
-
+//aaaaaaaaaaaaaa
 const AchatOptions = (props) => {
   const [details, setdetails] = useState(false);
   const [consulter, setConsulter] = useState(false);
