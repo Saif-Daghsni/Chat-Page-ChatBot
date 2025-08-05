@@ -1,17 +1,13 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+const orderUserinfo = new mongoose.Schema({
+  userId: { type: String,  },
+  userName: { type: String, trim: true },
+});
+
 const orderSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  username: {
-    type: String,
-    required: true,
-    trim: true,
-  },
+  user: { type: orderUserinfo },
   title: {
     type: String,
     trim: true,
@@ -19,7 +15,7 @@ const orderSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["Achat", "Vente", "Matières premières" , "Emballage"],
+    enum: ["Achat", "Vente", "Matières premières", "Emballage"],
     required: true,
   },
   gamme: {
@@ -49,7 +45,7 @@ const orderSchema = new mongoose.Schema({
   },
   date: {
     type: Date,
-    default: Date.now, 
+    default: Date.now,
   },
 });
 

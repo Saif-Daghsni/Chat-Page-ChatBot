@@ -10,9 +10,13 @@ const Consulter = (props) => {
       return handleError("Le message est vide");
     }
 
-    const Theorder = {
+    const OrderUserSender = {
       userId: props.user._id,
-      username: props.user.name,
+      userName: props.user.name,
+    };
+
+    const Theorder = {
+      user: OrderUserSender,
       title: props.title,
       type: props.type,
       gamme: props.gamme,
@@ -23,7 +27,7 @@ const Consulter = (props) => {
     };
 
     const newMessage = {
-      senderId : props.currentUser._id,
+      senderId: props.currentUser._id,
       order: Theorder,
     };
 
@@ -65,7 +69,7 @@ const Consulter = (props) => {
         <div className="button-row">
           <button
             className={`${
-              (props.quantiteNego && props.prixNego)
+              props.quantiteNego && props.prixNego
                 ? "negocier-active"
                 : "communique-button "
             }`}

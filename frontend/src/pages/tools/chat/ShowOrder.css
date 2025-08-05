@@ -1,0 +1,30 @@
+.OrderUser {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.OrderUser-message {
+  width: 50%;
+  background-color: #4494c9;
+  padding: 5px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.OrderUser-message p{
+    color: white;
+    font-size: 14px;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+}
+
+.OrderUser-bottom {
+  font-size: 10px;
+  font-weight: 100;
+  color: white;
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+}
