@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const orderUserinfo = new mongoose.Schema({
-  userId: { type: String,  },
-  userName: { type: String, trim: true },
+  _id: { type: String, required: true },
+  name: { type: String, required: true, trim: true },
 });
 
 const orderSchema = new mongoose.Schema({

@@ -10,7 +10,6 @@ import ShowImage from "./ShowImage";
 import ShowImage2 from "./ShowImage2";
 import ShowOrder from "./ShowOrder";
 
-
 const Chat = (props) => {
   const [getmessage, setGetMessage] = useState([]);
   const [image, setImage] = useState("");
@@ -222,6 +221,8 @@ const Chat = (props) => {
                     } else if (message.order) {
                       return message.senderId === props.user._id ? (
                         <ShowOrder
+                          a="1"
+                          user={message.order.user}
                           key={index}
                           timestamp={message.timestamp}
                           time={time}
@@ -230,6 +231,8 @@ const Chat = (props) => {
                         />
                       ) : (
                         <ShowOrder
+                          a="2"
+                          user={message.order.user}
                           key={index}
                           timestamp={message.timestamp}
                           time={time}

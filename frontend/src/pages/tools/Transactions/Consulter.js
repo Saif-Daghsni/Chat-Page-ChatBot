@@ -11,8 +11,8 @@ const Consulter = (props) => {
     }
 
     const OrderUserSender = {
-      userId: props.user._id,
-      userName: props.user.name,
+      _id: props.user._id,
+      name: props.user.name,
     };
 
     const Theorder = {
