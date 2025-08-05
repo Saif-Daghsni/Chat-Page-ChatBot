@@ -14,7 +14,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaBoxOpen } from "react-icons/fa";
 import { FaTags } from "react-icons/fa";
-//aaaaaaaaaaaaaa
+
 const AchatOptions = (props) => {
   const [details, setdetails] = useState(false);
   const [consulter, setConsulter] = useState(false);
@@ -107,23 +107,6 @@ const AchatOptions = (props) => {
           </div>
         </div>
       </div>
-      {consulter && (
-        <Consulter
-          user={props.user}
-          setConfirme={setConfirme}
-          setConsulter={setConsulter}
-          prixNego={props.prixNego}
-          quantiteNego={props.quantiteNego}
-          type={props.type}
-          gamme={props.gamme}
-          quantite={props.quantite}
-          prix={props.prix}
-          title={props.title}
-          OwnerOrderName={props.user.name}
-          OwnerOrderId={props.user._id}
-          currentUser={props.currentUser}
-        />
-      )}
 
       {confirme ? (
         <div className="option-details-row-buttons">
