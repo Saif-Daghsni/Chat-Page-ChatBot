@@ -58,6 +58,7 @@ const Share = (props) => {
             return handleError(data.error);
           }
           props.fetchMessages();
+          props.setMessage("Message d'un ordre");
         })
         .catch((err) => {
           console.error("Error sending message:", err);
@@ -70,6 +71,7 @@ const Share = (props) => {
   useEffect(() => {
     props.fetchMessages();
   }, [props.selecteduser, props.message]);
+
   useEffect(() => {
     fetch("http://localhost:5000/getAllUsers")
       .then((res) => res.json())

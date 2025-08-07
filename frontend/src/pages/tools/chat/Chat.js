@@ -46,7 +46,7 @@ const Chat = (props) => {
             return handleError(data.error);
           }
           props.setMessage("");
-          props.fetchMessages();
+          // props.fetchMessages();
         })
         .catch((err) => {
           console.error("Error sending message:", err);

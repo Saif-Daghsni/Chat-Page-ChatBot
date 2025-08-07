@@ -22,9 +22,9 @@ const Chat_Page = () => {
   const [message, setMessage] = useState("");
   const [getmessage, setGetMessage] = useState([]);
 
-  useEffect(() => {
-    fetchMessages();
-  }, [selecteduser, message]);
+  // useEffect(() => {
+  //   fetchMessages();
+  // }, [selecteduser, message]);
 
   const fetchMessages = async () => {
     try {
@@ -181,6 +181,7 @@ const Chat_Page = () => {
                               key={index}
                               message={message}
                               selecteduser={selecteduser}
+                    setMessage={setMessage}
                             />
                           ))
                         )}
@@ -246,6 +247,7 @@ const Chat_Page = () => {
                                   currentUser={user}
                                   message={message}
                                   selecteduser={selecteduser}
+                    setMessage={setMessage}
                                 />
                               ) : null
                             )}
@@ -273,6 +275,7 @@ const Chat_Page = () => {
                                   currentUser={user}
                                   message={message}
                                   selecteduser={selecteduser}
+                    setMessage={setMessage}
                                 />
                               ) : null
                             )}

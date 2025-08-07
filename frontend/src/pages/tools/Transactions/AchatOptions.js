@@ -213,6 +213,7 @@ const AchatOptions = (props) => {
             fetchMessages={props.fetchMessages}
             message={props.message}
             selecteduser={props.selecteduser}
+            setMessage={props.setMessage}
           />
         </>
       )}

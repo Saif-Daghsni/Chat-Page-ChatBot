@@ -32,7 +32,7 @@ const User = (props) => {
 
   useEffect(() => {
     handleGetTheLastMessages();
-  }, [props.user._id, props.message]);
+  }, [props.user._id, props.message ]);
 
   useEffect(() => {
     const result = props.users.filter(
