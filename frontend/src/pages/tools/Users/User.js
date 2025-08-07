@@ -77,6 +77,7 @@ const User = (props) => {
       .then((res) => res.json())
       .then((data) => {
         console.log("✅ Viewed message updated:", data);
+        setselected(userId);
       })
       .catch((err) => console.error("❌ Update viewed message error:", err));
   };

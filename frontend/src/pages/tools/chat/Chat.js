@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaPaperclip, FaMicrophone, FaArrowUp } from "react-icons/fa";
 import "./Chat.css";
 import FirstUser from "./FirstUser";
@@ -12,7 +11,16 @@ import ShowOrder from "./ShowOrder";
 
 const Chat = (props) => {
   const [image, setImage] = useState("");
+  const [refreshTime, setRefreshTime] = useState(false); 
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshTime((prev) => !prev); 
+    }, 60000); 
+
+    return () => clearInterval(interval); 
+  }, []);
 
   const handleSendMessage = (e) => {
     if (e === 1 && props.message.trim() === "") {
@@ -31,6 +39,7 @@ const Chat = (props) => {
       members: [props.user._id, props.selecteduser._id],
       messages: [newMessage],
     };
+
     try {
       fetch("http://localhost:5000/conversations", {
         method: "POST",
@@ -46,7 +55,6 @@ const Chat = (props) => {
             return handleError(data.error);
           }
           props.setMessage("");
-          // props.fetchMessages();
         })
         .catch((err) => {
           console.error("Error sending message:", err);
@@ -75,10 +83,11 @@ const Chat = (props) => {
       return { value: diffDays, type: "jours" };
     }
   };
+
   const fileInputRef = useRef(null);
 
   const handleIconClick = () => {
-    fileInputRef.current.click(); // Trigger file input
+    fileInputRef.current.click();
   };
 
   function covertToBase64(e) {
@@ -100,7 +109,6 @@ const Chat = (props) => {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
         const compressedBase64 = canvas.toDataURL("image/jpeg", 1.0);
-
         setImage(compressedBase64);
       };
     };
@@ -110,20 +118,13 @@ const Chat = (props) => {
     };
   }
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      console.log("Selected file:", file.name);
-      // You can now upload it or display it...
-    }
-  };
   useEffect(() => {
     props.fetchMessages();
   }, [props.selecteduser, props.message]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-  }, [props.getmessage, props.selecteduser]);
+  }, [props.getmessage, props.selecteduser, refreshTime]); // Add refreshTime as dependency
 
   return (
     <div className="chat-all">
@@ -156,7 +157,11 @@ const Chat = (props) => {
                 return conversation.messages.length > 0 ? (
                   conversation.messages.map((message, index) => {
                     const time = calculateTime(message.timestamp);
-                    if (message.content && message.content !== "Image sended" && message.content !== "Message d'un ordre") {
+                    if (
+                      message.content &&
+                      message.content !== "Image sended" &&
+                      message.content !== "Message d'un ordre"
+                    ) {
                       return message.senderId === props.user._id ? (
                         <FirstUser
                           key={index}
@@ -164,6 +169,7 @@ const Chat = (props) => {
                           timestamp={message.timestamp}
                           time={time}
                           isRead={message.isRead}
+                          selecteduser={props.selecteduser}
                         />
                       ) : (
                         <SecondUser
@@ -172,6 +178,7 @@ const Chat = (props) => {
                           timestamp={message.timestamp}
                           time={time}
                           isRead={message.isRead}
+                          selecteduser={props.selecteduser}
                         />
                       );
                     } else if (
@@ -197,7 +204,10 @@ const Chat = (props) => {
                           imageSended={message.image}
                         />
                       );
-                    } else if (message.order && message.content === "Message d'un ordre") {
+                    } else if (
+                      message.order &&
+                      message.content === "Message d'un ordre"
+                    ) {
                       return message.senderId === props.user._id ? (
                         <ShowOrder
                           a="1"
@@ -284,7 +294,7 @@ const Chat = (props) => {
             }}
           />
           <div className="chat-icons-right">
-            <FaMicrophone className="chat-icon-mic" />
+            {/* <FaMicrophone className="chat-icon-mic" /> */}
             <FaArrowUp
               className="chat-icon-arrow"
               onClick={() => {
