@@ -62,3 +62,15 @@
     margin-top: 25px;
     margin-left: 30px;
 }
+
+.disconnected{
+    background-color: #A11250;
+    border: 1.5px solid #383838;
+    height: 10px;
+    width: 10px;
+    z-index: 10;
+    position: absolute;
+    border-radius: 50%;
+    margin-top: 25px;
+    margin-left: 30px;
+}

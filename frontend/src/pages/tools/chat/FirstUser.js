@@ -5,7 +5,6 @@ import { BiCheck } from "react-icons/bi";
 
 const FirstUser = (props) => {
 
-  useEffect(() => {}, [props.selecteduser, props.message]);
   return (
     <div className="FirstUser">
       <div className="FirstUser-message">

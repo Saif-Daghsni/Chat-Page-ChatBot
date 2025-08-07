@@ -22,10 +22,6 @@ const Chat_Page = () => {
   const [message, setMessage] = useState("");
   const [getmessage, setGetMessage] = useState([]);
 
-  // useEffect(() => {
-  //   fetchMessages();
-  // }, [selecteduser, message]);
-
   const fetchMessages = async () => {
     try {
       const response = await fetch("http://localhost:5000/GetConversations", {
@@ -102,6 +98,7 @@ const Chat_Page = () => {
                       user={user}
                       selecteduser={selecteduser}
                       message={message}
+                      getmessage={getmessage}
                     />
                   )}
                 </div>
@@ -181,7 +178,7 @@ const Chat_Page = () => {
                               key={index}
                               message={message}
                               selecteduser={selecteduser}
-                    setMessage={setMessage}
+                              setMessage={setMessage}
                             />
                           ))
                         )}
@@ -247,7 +244,7 @@ const Chat_Page = () => {
                                   currentUser={user}
                                   message={message}
                                   selecteduser={selecteduser}
-                    setMessage={setMessage}
+                                  setMessage={setMessage}
                                 />
                               ) : null
                             )}
@@ -275,7 +272,7 @@ const Chat_Page = () => {
                                   currentUser={user}
                                   message={message}
                                   selecteduser={selecteduser}
-                    setMessage={setMessage}
+                                  setMessage={setMessage}
                                 />
                               ) : null
                             )}

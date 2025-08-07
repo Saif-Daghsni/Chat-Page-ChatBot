@@ -6,7 +6,6 @@
 
 .SecondUserimage-message {
   width: 50%;
-  background-color: #E4E4E7;
   padding-bottom: 5px;
   border-radius: 10px;
   display: flex;
@@ -16,7 +15,7 @@
 .SecondUserimage-bottom {
   font-size: 10px;
   font-weight: 100;
-  color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
   display: flex;
   align-items: center;
   padding-right: 5px;

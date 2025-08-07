@@ -3,13 +3,14 @@ import PropTypes from "prop-types";
 import "./UserProfile.css";
 import { FaUserCircle } from "react-icons/fa";
 
-const UserProfile = ({ id, selected, onClick, name, lastMessage, time }) => {
+const UserProfile = ({ id, selected, onClick, name, lastMessage, time,isOnline }) => {
   return (
     <div
       className={selected ? "UserProfile-inactive" : "UserProfile-active"}
       onClick={() => onClick(id)}
     >
       <div className="UserProfile-photo">
+        <span className={isOnline ? "connected" : "disconnected"}></span>
         <FaUserCircle size={40} color="#3b5998" />
       </div>
 

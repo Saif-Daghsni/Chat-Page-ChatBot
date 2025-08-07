@@ -26,6 +26,9 @@ const Chat = (props) => {
     if (e === 1 && props.message.trim() === "") {
       return handleError("Le message est vide");
     }
+    if(props.selecteduser === null || props.selecteduser.length === 0) {
+      return handleError("Veuillez sélectionner un utilisateur");
+    }
 
     const newMessage = {
       senderId: props.user._id,
@@ -124,7 +127,7 @@ const Chat = (props) => {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-  }, [props.getmessage, props.selecteduser, refreshTime]); // Add refreshTime as dependency
+  }, [props.getmessage, props.selecteduser, refreshTime]); 
 
   return (
     <div className="chat-all">
@@ -294,7 +297,7 @@ const Chat = (props) => {
             }}
           />
           <div className="chat-icons-right">
-            {/* <FaMicrophone className="chat-icon-mic" /> */}
+            <FaMicrophone className="chat-icon-mic" />
             <FaArrowUp
               className="chat-icon-arrow"
               onClick={() => {

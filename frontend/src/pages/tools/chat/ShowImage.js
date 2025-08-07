@@ -19,7 +19,7 @@ const ShowImage = (props) => {
             <BiCheckDouble
               style={{
                 marginLeft: "5px",
-                color: "#ffffffff",
+                color: "#000000ff",
                 fontSize: "14px",
               }}
             />
@@ -27,7 +27,7 @@ const ShowImage = (props) => {
             <BiCheck
               style={{
                 marginLeft: "5px",
-                color: "#ffffffff",
+                color: "#000000ff",
                 fontSize: "14px",
               }}
             />

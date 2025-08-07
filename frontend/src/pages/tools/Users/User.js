@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import "./User.css";
 import { FaSearch } from "react-icons/fa";
 import UserProfile from "./UserProfile";
 import { handleError } from "../../../utils";
 
 const User = (props) => {
-  const [selected, setselected] = useState(false);
+  const [selected, setselected] = useState(null);
   const [researh, setresearh] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState([]);
   const [usersMessages, setUsersMessages] = useState([]);
+  const [refreshTime, setRefreshTime] = useState(false);
+  const messagesEndRef = useRef(null);
 
   const handleGetTheLastMessages = () => {
     const token = localStorage.getItem("token");
@@ -20,31 +21,14 @@ const User = (props) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("✅ Last messages fetched:", data);
         if (Array.isArray(data)) {
           setUsersMessages(data);
         } else {
           setUsersMessages([]);
         }
       })
-      .catch((err) => console.error("❌ Fetch last messages error:", err));
+      .catch((err) => console.error("Fetch last messages error:", err));
   };
-
-  useEffect(() => {
-    handleGetTheLastMessages();
-  }, [props.user._id, props.message ]);
-
-  useEffect(() => {
-    const result = props.users.filter(
-      (user) =>
-        user.name.toLowerCase().includes(researh.toLowerCase()) &&
-        user.name !== props.user.name
-    );
-    if (result === "") {
-      return handleError("Utilisateur non trouvé");
-    }
-    setFilteredUsers(result);
-  }, [researh, props.users, props.message]);
 
   const calculateTime = (timestamp) => {
     const now = new Date();
@@ -75,12 +59,77 @@ const User = (props) => {
       },
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log("✅ Viewed message updated:", data);
-        setselected(userId);
-      })
-      .catch((err) => console.error("❌ Update viewed message error:", err));
+      .then(() => setselected(currentUserId))
+      .catch((err) => {
+        console.error("Update error:", err);
+        setselected(currentUserId);
+      });
   };
+
+  const getSortedUsers = useMemo(() => {
+    return [...props.users].filter(user => user._id !== props.user._id).sort((a, b) => {
+      const msgA = usersMessages.find(msg => msg.userId === a._id);
+      const msgB = usersMessages.find(msg => msg.userId === b._id);
+      
+      if (msgA && msgB) {
+        return new Date(msgB.timestamp) - new Date(msgA.timestamp);
+      }
+      if (msgA) return -1;
+      if (msgB) return 1;
+      return 0;
+    });
+  }, [props.users, usersMessages, props.user._id]);
+
+  const getFilteredAndSortedUsers = useMemo(() => {
+    const filtered = props.users.filter(
+      user => user.name.toLowerCase().includes(researh.toLowerCase()) && 
+              user._id !== props.user._id
+    );
+    
+    return filtered.sort((a, b) => {
+      const msgA = usersMessages.find(msg => msg.userId === a._id);
+      const msgB = usersMessages.find(msg => msg.userId === b._id);
+      
+      if (msgA && msgB) {
+        return new Date(msgB.timestamp) - new Date(msgA.timestamp);
+      }
+      if (msgA) return -1;
+      if (msgB) return 1;
+      return 0;
+    });
+  }, [researh, props.users, usersMessages, props.user._id]);
+
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
+
+// WebSocket connection in useEffect
+useEffect(() => {
+  const ws = new WebSocket('ws://localhost:5000');
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.type === 'onlineUsers') {
+      setOnlineUsers(new Set(data.data));
+    }
+  };
+
+  return () => ws.close();
+}, []);
+
+  useEffect(() => {
+    handleGetTheLastMessages();
+  }, [props.user._id, props.message]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshTime((prev) => !prev);
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  }, [props.getmessage, props.selecteduser, refreshTime]);
 
   return (
     <div className="users-container">
@@ -95,7 +144,7 @@ const User = (props) => {
       </div>
       <div className="users-buttom">
         {researh
-          ? filteredUsers.map((user) => (
+          ? getFilteredAndSortedUsers.map((user) => (
               <UserProfile
                 key={user._id}
                 id={user._id}
@@ -105,14 +154,8 @@ const User = (props) => {
                     ?.lastMessage || "Commencer une conversation"
                 }
                 time={(() => {
-                  const msg = usersMessages.find(
-                    (msg) => msg.userId === user._id
-                  );
-                  return msg
-                    ? () => {
-                        calculateTime(msg.timestamp);
-                      }
-                    : undefined;
+                  const msg = usersMessages.find((msg) => msg.userId === user._id);
+                  return msg ? calculateTime(msg.timestamp) : undefined;
                 })()}
                 onClick={() => {
                   setselected(user._id);
@@ -120,36 +163,32 @@ const User = (props) => {
                   handleviewedmessage(props.user._id, user._id);
                 }}
                 name={user.name}
+  isOnline={onlineUsers.has(user._id)}
               />
             ))
-          : props.users.map((user) => {
-              if (props.user._id === user._id) {
-                return null;
-              }
-              return (
-                <UserProfile
-                  key={user._id}
-                  id={user._id}
-                  selected={selected === user._id}
-                  time={(() => {
-                    const msg = usersMessages.find(
-                      (msg) => msg.userId === user._id
-                    );
-                    return msg ? calculateTime(msg.timestamp) : undefined;
-                  })()}
-                  onClick={() => {
-                    setselected(user._id);
-                    props.setSelecteduser(user);
-                    handleviewedmessage(props.user._id, user._id);
-                  }}
-                  lastMessage={
-                    usersMessages.find((msg) => msg.userId === user._id)
-                      ?.lastMessage || "Commencer une conversation"
-                  }
-                  name={user.name}
-                />
-              );
-            })}
+          : getSortedUsers.map((user) => (
+              <UserProfile
+                key={user._id}
+                id={user._id}
+                selected={selected === user._id}
+                time={(() => {
+                  const msg = usersMessages.find((msg) => msg.userId === user._id);
+                  return msg ? calculateTime(msg.timestamp) : undefined;
+                })()}
+                onClick={() => {
+                  setselected(user._id);
+                  props.setSelecteduser(user);
+                  handleviewedmessage(props.user._id, user._id);
+                }}
+                lastMessage={
+                  usersMessages.find((msg) => msg.userId === user._id)
+                    ?.lastMessage || "Commencer une conversation"
+                }
+                name={user.name}
+  isOnline={onlineUsers.has(user._id)}
+              />
+            ))}
+        <div ref={messagesEndRef} />
       </div>
     </div>
   );
