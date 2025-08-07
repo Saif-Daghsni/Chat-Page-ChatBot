@@ -16,7 +16,6 @@ const orderSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ["Achat", "Vente", "Matières premières", "Emballage"],
-    required: true,
   },
   gamme: {
     type: String,
@@ -25,12 +24,10 @@ const orderSchema = new mongoose.Schema({
   },
   quantite: {
     type: Number,
-    required: true,
     min: 1,
   },
   prix: {
     type: Number,
-    required: true,
     min: 0,
   },
   quantiteNego: {

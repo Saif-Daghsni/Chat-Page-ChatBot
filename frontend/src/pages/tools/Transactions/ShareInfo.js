@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./ShareInfo.css";
+import { FaUserCircle } from "react-icons/fa";
 
 const ShareInfo = (props) => {
   const [selected, setselected] = useState(false);
@@ -15,7 +16,9 @@ const ShareInfo = (props) => {
 
         if (props.selectedusers.includes(props.user._id)) {
           // Remove user
-          props.setSelectedUsers(props.selectedusers.filter((id) => id !== props.user._id));
+          props.setSelectedUsers(
+            props.selectedusers.filter((id) => id !== props.user._id)
+          );
         } else {
           // Add user
           props.setSelectedUsers([...props.selectedusers, props.user._id]);
@@ -23,7 +26,7 @@ const ShareInfo = (props) => {
       }}
     >
       <div className="ShareInfo-div-img">
-        <img src="/Users/Avatar.png" alt="Avatar" />
+        <FaUserCircle size={40} color="#3b5998" />
       </div>
 
       <div className="ShareInfo-name">

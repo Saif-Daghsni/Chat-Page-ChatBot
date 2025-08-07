@@ -11,6 +11,65 @@ const Share = (props) => {
   const [users, setUsers] = useState([]);
   const [selectedusers, setSelectedUsers] = useState([]);
 
+  const handleSendOrder = (selectedUsers) => {
+    if (selectedUsers.length === 0) {
+      return handleError("Veuillez sélectionner un utilisateur");
+    }
+
+    const OrderUserSender = {
+      _id: props.currentUser._id,
+      name: props.currentUser.name,
+    };
+
+    selectedUsers.forEach((userId) => {
+      const Theorder = {
+        user: OrderUserSender,
+        title: props.title,
+        type: props.type,
+        gamme: props.gamme,
+        quantite: props.quantite,
+        prix: props.prix,
+        quantiteNego: props.quantiteNego,
+        prixNego: props.prixNego,
+      };
+
+      const newMessage = {
+        senderId: props.currentUser._id,
+        content: "Message d'un ordre",
+        order: Theorder,
+      };
+
+      const MessageDetails = {
+        members: [userId, props.currentUser._id],
+        messages: [newMessage],
+      };
+
+      fetch("http://localhost:5000/conversations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("token"),
+        },
+        body: JSON.stringify(MessageDetails),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            return handleError(data.error);
+          }
+          props.fetchMessages();
+        })
+        .catch((err) => {
+          console.error("Error sending message:", err);
+          handleError("Erreur lors de l'envoi du message");
+        });
+    });
+
+    handleSuccess("Messages envoyés avec succès");
+  };
+  useEffect(() => {
+    props.fetchMessages();
+  }, [props.selecteduser, props.message]);
   useEffect(() => {
     fetch("http://localhost:5000/getAllUsers")
       .then((res) => res.json())
@@ -65,7 +124,9 @@ const Share = (props) => {
       <div className="share-buttons">
         <button
           className="share-annuler"
-          onClick={() => props.setrecherche(false)}
+          onClick={() => {
+            props.setrecherche(false);
+          }}
         >
           Annuler
         </button>
@@ -75,7 +136,7 @@ const Share = (props) => {
             if (selectedusers.length === 0) {
               return handleError("Veuillez sélectionner un utilisateur");
             } else {
-              handleSuccess("Le message est envoyé");
+              handleSendOrder(selectedusers);
               setSelectedUsers([]);
               props.setrecherche(false);
             }

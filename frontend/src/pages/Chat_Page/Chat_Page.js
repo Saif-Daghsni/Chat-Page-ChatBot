@@ -14,13 +14,37 @@ const Chat_Page = () => {
   const [vente, setvente] = useState(false);
   const [Lesvente, setLesvente] = useState(false);
   const [Lesachat, setLesachat] = useState(true);
-  const [conversation, setConversation] = useState(true);
-  const [historique, sethistorique] = useState(false);
+  const [conversation, setConversation] = useState(false);
+  const [historique, sethistorique] = useState(true);
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [selecteduser, setSelecteduser] = useState([]);
   const [message, setMessage] = useState("");
+  const [getmessage, setGetMessage] = useState([]);
 
+  useEffect(() => {
+    fetchMessages();
+  }, [selecteduser, message]);
+
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/GetConversations", {
+        method: "GET",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+      const data = await response.json();
+      if (data.error) {
+        return handleError(data.error);
+      }
+      setGetMessage(data);
+      console.log("data :", data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      handleError("Erreur lors de la récupération des messages");
+    }
+  };
   useEffect(() => {}, [user?.orders]);
 
   useEffect(() => {
@@ -88,6 +112,8 @@ const Chat_Page = () => {
                     selecteduser={selecteduser}
                     message={message}
                     setMessage={setMessage}
+                    fetchMessages={fetchMessages}
+                    getmessage={getmessage}
                   />
                 </div>
 
@@ -141,6 +167,7 @@ const Chat_Page = () => {
                         {users.map((userOrder) =>
                           userOrder.orders.map((order, index) => (
                             <AchatOptions
+                              fetchMessages={fetchMessages}
                               user={userOrder}
                               currentUser={user}
                               button={"Consulter"}
@@ -152,6 +179,8 @@ const Chat_Page = () => {
                               prixNego={order.prixNego}
                               title={order.title}
                               key={index}
+                              message={message}
+                              selecteduser={selecteduser}
                             />
                           ))
                         )}
@@ -200,6 +229,7 @@ const Chat_Page = () => {
                             {user.orders.map((order) =>
                               order.title === "Achat" ? (
                                 <AchatOptions
+                                  fetchMessages={fetchMessages}
                                   setUser={setUser}
                                   order={order}
                                   user={user}
@@ -213,6 +243,9 @@ const Chat_Page = () => {
                                   key={order._id}
                                   setvente={setvente}
                                   title={order.title}
+                                  currentUser={user}
+                                  message={message}
+                                  selecteduser={selecteduser}
                                 />
                               ) : null
                             )}
@@ -223,6 +256,7 @@ const Chat_Page = () => {
                             {user.orders.map((order, index) =>
                               order.title === "Vente" ? (
                                 <AchatOptions
+                                  fetchMessages={fetchMessages}
                                   setUser={setUser}
                                   order={order}
                                   user={user}
@@ -236,6 +270,9 @@ const Chat_Page = () => {
                                   key={index}
                                   setvente={setvente}
                                   title={order.title}
+                                  currentUser={user}
+                                  message={message}
+                                  selecteduser={selecteduser}
                                 />
                               ) : null
                             )}

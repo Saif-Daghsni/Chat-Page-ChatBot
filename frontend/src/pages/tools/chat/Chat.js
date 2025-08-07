@@ -11,7 +11,6 @@ import ShowImage2 from "./ShowImage2";
 import ShowOrder from "./ShowOrder";
 
 const Chat = (props) => {
-  const [getmessage, setGetMessage] = useState([]);
   const [image, setImage] = useState("");
   const messagesEndRef = useRef(null);
 
@@ -47,7 +46,7 @@ const Chat = (props) => {
             return handleError(data.error);
           }
           props.setMessage("");
-          fetchMessages();
+          props.fetchMessages();
         })
         .catch((err) => {
           console.error("Error sending message:", err);
@@ -56,26 +55,6 @@ const Chat = (props) => {
     } catch (error) {
       console.error("Error sending message:", error);
       handleError("Erreur lors de l'envoi du message");
-    }
-  };
-
-  const fetchMessages = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/GetConversations", {
-        method: "GET",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      });
-      const data = await response.json();
-      if (data.error) {
-        return handleError(data.error);
-      }
-      setGetMessage(data);
-      console.log("data :", data);
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-      handleError("Erreur lors de la récupération des messages");
     }
   };
 
@@ -139,12 +118,12 @@ const Chat = (props) => {
     }
   };
   useEffect(() => {
-    fetchMessages();
+    props.fetchMessages();
   }, [props.selecteduser, props.message]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-  }, [getmessage, props.selecteduser]);
+  }, [props.getmessage, props.selecteduser]);
 
   return (
     <div className="chat-all">
@@ -167,7 +146,7 @@ const Chat = (props) => {
         <div className="chat-messages">
           {props.selecteduser ? (
             (() => {
-              const conversation = getmessage.find(
+              const conversation = props.getmessage.find(
                 (conv) =>
                   conv.members.includes(props.selecteduser._id) &&
                   conv.members.includes(props.user._id)
@@ -177,7 +156,7 @@ const Chat = (props) => {
                 return conversation.messages.length > 0 ? (
                   conversation.messages.map((message, index) => {
                     const time = calculateTime(message.timestamp);
-                    if (message.content && message.content !== "Image sended") {
+                    if (message.content && message.content !== "Image sended" && message.content !== "Message d'un ordre") {
                       return message.senderId === props.user._id ? (
                         <FirstUser
                           key={index}
@@ -218,7 +197,7 @@ const Chat = (props) => {
                           imageSended={message.image}
                         />
                       );
-                    } else if (message.order) {
+                    } else if (message.order && message.content === "Message d'un ordre") {
                       return message.senderId === props.user._id ? (
                         <ShowOrder
                           a="1"

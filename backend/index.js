@@ -126,7 +126,8 @@ app.post("/conversations", verifyToken, async (req, res) => {
 
   try {
     // Sort members to avoid duplicate conversations (e.g., [A, B] vs [B, A])
-    const sortedMembers = members.sort();
+    const sortedMembers = [...members].sort();
+
 
     // Check if a conversation already exists
     let conversation = await Conversation.findOne({
@@ -187,33 +188,37 @@ app.get("/GetLastMessages", verifyToken, async (req, res) => {
   }
 });
 
-app.put("/viewedmessage/:userID/:selectedUserID", verifyToken, async (req, res) => {
-  const { userID, selectedUserID } = req.params;
+app.put(
+  "/viewedmessage/:userID/:selectedUserID",
+  verifyToken,
+  async (req, res) => {
+    const { userID, selectedUserID } = req.params;
 
-  try {
-    const conversation = await Conversation.findOne({
-      members: { $all: [userID, selectedUserID] },
-    });
+    try {
+      const conversation = await Conversation.findOne({
+        members: { $all: [userID, selectedUserID] },
+      });
 
-    if (!conversation) {
-      return res.status(404).json({ message: "Conversation not found" });
-    }
-
-    // Mark all messages in the conversation as read for the selected user
-    conversation.messages.forEach((message) => {
-      if (message.senderId.toString() === selectedUserID) {
-        message.isRead = true;
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
       }
-    });
 
-    await conversation.save();
+      // Mark all messages in the conversation as read for the selected user
+      conversation.messages.forEach((message) => {
+        if (message.senderId.toString() === selectedUserID) {
+          message.isRead = true;
+        }
+      });
 
-    res.status(200).json({ message: "Messages marked as read" });
-  } catch (error) {
-    console.error("Error marking messages as read:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+      await conversation.save();
+
+      res.status(200).json({ message: "Messages marked as read" });
+    } catch (error) {
+      console.error("Error marking messages as read:", error);
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
   }
-});
+);
 
 // Start server
 const PORT = process.env.PORT || 5000;

@@ -131,7 +131,9 @@ const AchatOptions = (props) => {
             <>
               <button
                 className="option-details-Consulter-share"
-                onClick={() => setrecherche(true)}
+                onClick={() => {
+                  setrecherche(true);
+                }}
               >
                 <BiShareAlt size={13} />
               </button>
@@ -197,7 +199,21 @@ const AchatOptions = (props) => {
 
       {recherche && (
         <>
-          <Share user={props.user} setrecherche={setrecherche} />
+          <Share
+            user={props.user}
+            setrecherche={setrecherche}
+            title={props.title}
+            type={props.type}
+            gamme={props.gamme}
+            quantite={props.quantite}
+            prix={props.prix}
+            quantiteNego={props.quantiteNego}
+            prixNego={props.prixNego}
+            currentUser={props.currentUser}
+            fetchMessages={props.fetchMessages}
+            message={props.message}
+            selecteduser={props.selecteduser}
+          />
         </>
       )}
 
