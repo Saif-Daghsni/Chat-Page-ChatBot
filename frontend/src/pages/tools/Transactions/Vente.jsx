@@ -146,18 +146,10 @@ const Vente = (props) => {
     }
   };
   const handleAddOrder = async () => {
-    const cleanType =
-      typeof type === "object" && type.value ? type.value : type;
-    const cleanGamme = typeof gamme === "object" ? gamme.value : gamme;
     const newOrder = {
-      title: props.title,
-      type: cleanType,
-      gamme: cleanGamme,
-      quantite: quantite,
-      prix: prix,
-      quantiteNego: quantiteNego,
-      prixNego: prixNego,
-      date: new Date().toISOString(),
+      content: message ,
+      timestamp: Date.now(),
+      sender:"user",
     };
 
     try {

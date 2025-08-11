@@ -173,6 +173,7 @@ const Chat = (props) => {
                           time={time}
                           isRead={message.isRead}
                           selecteduser={props.selecteduser}
+                        robot={false}
                         />
                       ) : (
                         <SecondUser
@@ -182,6 +183,7 @@ const Chat = (props) => {
                           time={time}
                           isRead={message.isRead}
                           selecteduser={props.selecteduser}
+                        robot={false}
                         />
                       );
                     } else if (

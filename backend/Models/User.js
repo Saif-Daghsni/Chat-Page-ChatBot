@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
+const RobotSchema = new mongoose.Schema({
+  content: { type: String, required: false, default: null },
+  timestamp: { type: Date, default: Date.now },
+  sender: { type: String, required: true },
+});
+
 const orderSchema = new mongoose.Schema({
   title: String,
   type: String,
@@ -31,6 +37,7 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
   },
   orders: [orderSchema],
+  robotConversation:[RobotSchema]
 });
 
 // Middleware pour hasher le mot de passe avant de sauvegarder

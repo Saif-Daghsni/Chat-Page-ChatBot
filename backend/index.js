@@ -8,8 +8,8 @@ import authRouter from "./Routes/AuthRouter.js";
 import cors from "cors";
 import verifyToken from "./Middlewares/Auth.js";
 import Conversation from "./Models/Conversation.js";
-import { WebSocketServer } from 'ws';
-import http from 'http';
+import { WebSocketServer } from "ws";
+import http from "http";
 
 // Initialize Express app
 const app = express();
@@ -28,11 +28,11 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 connectToDatabase();
 
 // WebSocket Connection Handler
-wss.on('connection', (ws, req) => {
-  const token = req.url.split('token=')[1]?.split('&')[0];
-  
+wss.on("connection", (ws, req) => {
+  const token = req.url.split("token=")[1]?.split("&")[0];
+
   if (!token) {
-    ws.close(1008, 'Authentication required');
+    ws.close(1008, "Authentication required");
     return;
   }
 
@@ -54,41 +54,40 @@ wss.on('connection', (ws, req) => {
       ws.ping();
     }, 30000);
 
-    ws.on('pong', () => {
+    ws.on("pong", () => {
       isAlive = true;
     });
 
-    ws.on('message', (data) => {
+    ws.on("message", (data) => {
       try {
         const message = JSON.parse(data);
         // Handle incoming messages
       } catch (error) {
-        console.error('Error parsing message:', error);
+        console.error("Error parsing message:", error);
       }
     });
 
-    ws.on('close', () => {
+    ws.on("close", () => {
       clearInterval(heartbeatInterval);
       onlineUsers.delete(userId);
       broadcastOnlineUsers();
     });
 
-    ws.on('error', (error) => {
-      console.error('WebSocket error:', error);
+    ws.on("error", (error) => {
+      console.error("WebSocket error:", error);
       ws.close();
     });
-
   } catch (error) {
-    console.error('Authentication failed:', error);
-    ws.close(1008, 'Invalid token');
+    console.error("Authentication failed:", error);
+    ws.close(1008, "Invalid token");
   }
 });
 
 function broadcastOnlineUsers() {
   const onlineUserIds = Array.from(onlineUsers.keys());
   const message = JSON.stringify({
-    type: 'onlineUsers',
-    data: onlineUserIds
+    type: "onlineUsers",
+    data: onlineUserIds,
   });
 
   wss.clients.forEach((client) => {
@@ -127,8 +126,11 @@ app.put("/addOrder/:userId", async (req, res) => {
       { $push: { orders: req.body } },
       { new: true }
     );
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
-    res.status(200).json({ message: "Order added successfully", user: updatedUser });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
+    res
+      .status(200)
+      .json({ message: "Order added successfully", user: updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -142,8 +144,11 @@ app.delete("/deleteOrder/:userId/:orderId", async (req, res) => {
       { $pull: { orders: { _id: orderId } } },
       { new: true }
     );
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
-    res.status(200).json({ message: "Order deleted successfully", user: updatedUser });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
+    res
+      .status(200)
+      .json({ message: "Order deleted successfully", user: updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -157,7 +162,9 @@ app.put("/updateOrder/:userId/:orderId", async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
     const order = user.orders.id(orderId);
     if (!order) return res.status(404).json({ message: "Order not found" });
-    Object.keys(updatedOrder).forEach((key) => { order[key] = updatedOrder[key] });
+    Object.keys(updatedOrder).forEach((key) => {
+      order[key] = updatedOrder[key];
+    });
     await user.save();
     res.status(200).json({ message: "Order updated successfully" });
   } catch (err) {
@@ -172,12 +179,17 @@ app.post("/conversations", verifyToken, async (req, res) => {
   }
   try {
     const sortedMembers = [...members].sort();
-    let conversation = await Conversation.findOne({ members: { $all: sortedMembers } });
+    let conversation = await Conversation.findOne({
+      members: { $all: sortedMembers },
+    });
     if (conversation) {
       conversation.messages.push(messages[0]);
       await conversation.save();
     } else {
-      conversation = await Conversation.create({ members: sortedMembers, messages });
+      conversation = await Conversation.create({
+        members: sortedMembers,
+        messages,
+      });
     }
     res.status(200).json(conversation);
   } catch (error) {
@@ -188,7 +200,7 @@ app.post("/conversations", verifyToken, async (req, res) => {
 app.get("/GetConversations", verifyToken, async (req, res) => {
   try {
     const conversations = await Conversation.find({
-      members: req.user.id
+      members: req.user.id,
     }).populate("messages.senderId", "name email");
     res.status(200).json(conversations);
   } catch (error) {
@@ -199,10 +211,11 @@ app.get("/GetConversations", verifyToken, async (req, res) => {
 app.get("/GetLastMessages", verifyToken, async (req, res) => {
   try {
     const conversations = await Conversation.find({
-      members: req.user.id
+      members: req.user.id,
     }).populate("messages.senderId", "name email");
     const lastMessages = conversations.map((conversation) => {
-      const lastMessage = conversation.messages[conversation.messages.length - 1];
+      const lastMessage =
+        conversation.messages[conversation.messages.length - 1];
       return {
         userId: conversation.members.find((id) => id !== req.user.id),
         lastMessage: lastMessage ? lastMessage.content : "",
@@ -215,20 +228,42 @@ app.get("/GetLastMessages", verifyToken, async (req, res) => {
   }
 });
 
-app.put("/viewedmessage/:userID/:selectedUserID", verifyToken, async (req, res) => {
-  const { userID, selectedUserID } = req.params;
+app.put(
+  "/viewedmessage/:userID/:selectedUserID",
+  verifyToken,
+  async (req, res) => {
+    const { userID, selectedUserID } = req.params;
+    try {
+      const conversation = await Conversation.findOne({
+        members: { $all: [userID, selectedUserID] },
+      });
+      if (!conversation)
+        return res.status(404).json({ message: "Conversation not found" });
+      conversation.messages.forEach((message) => {
+        if (message.senderId.toString() === selectedUserID) {
+          message.isRead = true;
+        }
+      });
+      await conversation.save();
+      res.status(200).json({ message: "Messages marked as read" });
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+    }
+  }
+);
+
+app.put("/addMessageToTheBot/:userId", async (req, res) => {
   try {
-    const conversation = await Conversation.findOne({
-      members: { $all: [userID, selectedUserID] },
-    });
-    if (!conversation) return res.status(404).json({ message: "Conversation not found" });
-    conversation.messages.forEach((message) => {
-      if (message.senderId.toString() === selectedUserID) {
-        message.isRead = true;
-      }
-    });
-    await conversation.save();
-    res.status(200).json({ message: "Messages marked as read" });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      { $push: { robotConversation: req.body } },
+      { new: true }
+    );
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
+    res
+      .status(200)
+      .json({ message: "Message added successfully", user: updatedUser });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

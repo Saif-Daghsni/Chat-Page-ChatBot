@@ -4,7 +4,6 @@ import { BiCheckDouble } from "react-icons/bi";
 import { BiCheck } from "react-icons/bi";
 
 const SecondUser = (props) => {
-
   return (
     <div className="SecondUser">
       <div className="SecondUser-message">
@@ -16,22 +15,26 @@ const SecondUser = (props) => {
             : props.time.type === "heures"
             ? "heures"
             : "jours"}
-          {props.isRead === true ? (
-            <BiCheckDouble
-              style={{
-                marginLeft: "5px",
-                color: "#000000ff",
-                fontSize: "14px",
-              }}
-            />
-          ) : (
-            <BiCheck
-              style={{
-                marginLeft: "5px",
-                color: "#000000ff",
-                fontSize: "14px",
-              }}
-            />
+          {!props.robot && (
+            <>
+              {props.isRead === true ? (
+                <BiCheckDouble
+                  style={{
+                    marginLeft: "5px",
+                    color: "#000000ff",
+                    fontSize: "14px",
+                  }}
+                />
+              ) : (
+                <BiCheck
+                  style={{
+                    marginLeft: "5px",
+                    color: "#000000ff",
+                    fontSize: "14px",
+                  }}
+                />
+              )}
+            </>
           )}
         </div>
       </div>
