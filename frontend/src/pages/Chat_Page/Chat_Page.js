@@ -8,6 +8,7 @@ import { handleError, handleSuccess } from "../../utils";
 import Layout from "../../components/layout";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import ChatBot from "../ChatBot/chatBot";
 
 const Chat_Page = () => {
   const [achat, setachat] = useState(false);
@@ -15,7 +16,7 @@ const Chat_Page = () => {
   const [Lesvente, setLesvente] = useState(false);
   const [Lesachat, setLesachat] = useState(true);
   const [conversation, setConversation] = useState(false);
-  const [historique, sethistorique] = useState(true);
+  const [historique, sethistorique] = useState(false);
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [selecteduser, setSelecteduser] = useState([]);
@@ -80,6 +81,7 @@ const Chat_Page = () => {
   }
   return (
     <Layout>
+      <ChatBot />
       <ToastContainer position="bottom-right" />
       <div>
         <div className="topBar"></div>

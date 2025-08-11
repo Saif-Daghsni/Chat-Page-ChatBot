@@ -297,7 +297,6 @@ const Chat = (props) => {
             }}
           />
           <div className="chat-icons-right">
-            <FaMicrophone className="chat-icon-mic" />
             <FaArrowUp
               className="chat-icon-arrow"
               onClick={() => {
