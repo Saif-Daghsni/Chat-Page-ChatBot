@@ -1,7 +1,8 @@
-const Joi = require('joi');
+import Joi from 'joi';
+
 
 // Validation pour l'enregistrement
-const registerValidation = (data) => {
+export const registerValidation = (data) => {
     const schema = Joi.object({
         name: Joi.string().min(3).required(),
         email: Joi.string().email().required(),
@@ -11,7 +12,7 @@ const registerValidation = (data) => {
 };
 
 // Validation pour la connexion
-const loginValidation = (data) => {
+export const loginValidation = (data) => {
     const schema = Joi.object({
         email: Joi.string().email().required(),
         password: Joi.string().min(6).required(),
@@ -19,4 +20,4 @@ const loginValidation = (data) => {
     return schema.validate(data);
 };
 
-module.exports = { registerValidation, loginValidation };
+

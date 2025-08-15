@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+import mongoose from "mongoose";
 
 const orderUserinfo = new mongoose.Schema({
   _id: { type: String, required: true },
@@ -48,11 +47,11 @@ const orderSchema = new mongoose.Schema({
 
 const messageSchema = new mongoose.Schema({
   senderId: { type: String, required: true },
-  content: { type: String, required: false, default: null },
+  content: { type: String, default: null },
   timestamp: { type: Date, default: Date.now },
   isRead: { type: Boolean, default: false },
-  image: { type: String, required: false, default: null },
-  order: { type: orderSchema, required: false, default: null },
+  image: { type: String, default: null },
+  order: { type: orderSchema, default: null },
 });
 
 const ConversationSchema = new mongoose.Schema({
@@ -60,4 +59,4 @@ const ConversationSchema = new mongoose.Schema({
   messages: [messageSchema],
 });
 
-module.exports = mongoose.model("Conversation", ConversationSchema);
+export default mongoose.model("Conversation", ConversationSchema);

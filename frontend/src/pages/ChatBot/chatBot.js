@@ -1,176 +1,154 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
+import './ChatBot.css';
 
-import "./ChatBot.css";
-import { AiOutlineArrowLeft } from "react-icons/ai";
-import { AiOutlineShoppingCart } from "react-icons/ai";
-import { RiRobot2Line } from "react-icons/ri";
-import { HiOutlineChatBubbleLeftRight } from "react-icons/hi2";
-import { FaPaperclip, FaMicrophone, FaArrowUp } from "react-icons/fa";
-import { FaComments, FaUserCircle } from "react-icons/fa";
-import { handleError } from "../../utils";
-import FirstUser from "../tools/chat/FirstUser";
-import SecondUser from "../tools/chat/SecondUser";
-
-const ChatBot = (props) => {
-  const [expanded, setExpanded] = useState(false);
-  const [message, setMessage] = useState("");
+const Chatbot = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { from: 'bot', text: 'Bonjour ! Comment puis-je vous aider ?' }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  const [refreshTime, setRefreshTime] = useState(false);
-  const [conversation, setConversation] = useState(
-    props.user.robotConversation || []
-  );
+
+  const toggleChat = () => setIsOpen(o => !o);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  };
 
   useEffect(() => {
-    setConversation(props.user.robotConversation || []);
-  }, [props.user.robotConversation]);
+    scrollToBottom();
+  }, [messages, isLoading]);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-  }, [ expanded, conversation]);
+  const recruitmentKeywords = ['recrutement', 'effectif', 'formation', 'qualification', 'coût', 'round', 'annuler'];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRefreshTime((prev) => !prev);
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
+  const isRecruitmentQuestion = (text) => {
+    const lowerText = text.toLowerCase();
+    return recruitmentKeywords.some(keyword => lowerText.includes(keyword));
+  };
 
-  const calculateTime = (timestamp) => {
-    const now = new Date();
-    const sentTime = new Date(timestamp);
-    const diffMs = now - sentTime;
-
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMinutes < 60) {
-      return { value: diffMinutes, type: "minutes" };
-    } else if (diffHours < 24) {
-      return { value: diffHours, type: "heures" };
-    } else {
-      return { value: diffDays, type: "jours" };
+  const sendMessage = async () => {
+    if (!input.trim() || isLoading) return;
+  
+    const userText = input.trim();
+    setMessages(prev => [...prev, { from: 'user', text: userText }]);
+    setInput('');
+    setIsLoading(true);
+  
+    const minLoadingTime = 800; 
+    const startTime = Date.now();
+  
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000'}/api/chatbot`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText }),
+      });
+  
+      const data = await res.json();
+      let botReply = data.reply || "Désolé, je n'ai pas de réponse.";
+  
+      botReply = botReply.replace(/\*\*/g, '');
+  
+      const elapsed = Date.now() - startTime;
+      const remainingTime = minLoadingTime - elapsed;
+  
+      if (remainingTime > 0) {
+        setTimeout(() => {
+          setMessages(prev => [...prev, { from: 'bot', text: botReply }]);
+          setIsLoading(false);
+        }, remainingTime);
+      } else {
+        setMessages(prev => [...prev, { from: 'bot', text: botReply }]);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error("Chatbot error:", err);
+      setMessages(prev => [...prev, { from: 'bot', text: "Erreur lors de la réponse du bot." }]);
+      setIsLoading(false);
     }
   };
-  const handleSendMessage = (e) => {
-    if (e === 1 && message.trim() === "") {
-      return handleError("Le message est vide");
-    }
+  
 
-    const MessageDetails = {
-      content: message,
-      timestamp: Date.now(),
-      sender: "user",
-    };
-
-    try {
-      fetch(`http://localhost:5000/addMessageToTheBot/${props.user._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStorage.getItem("token"),
-        },
-        body: JSON.stringify(MessageDetails),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            return handleError(data.error);
-          }
-          setConversation((prev) => [...prev, MessageDetails]);
-          setMessage("");
-        })
-        .catch((err) => {
-          console.error("Error sending message:", err);
-          handleError("Erreur lors de l'envoi du message");
-        });
-    } catch (error) {
-      console.error("Error sending message:", error);
-      handleError("Erreur lors de l'envoi du message");
-    }
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') sendMessage();
   };
 
   return (
-    <div
-      className={`Achat ${expanded ? "expanded" : ""}`}
-      onClick={!expanded ? () => setExpanded(!expanded) : undefined}
-    >
-      {!expanded && <RiRobot2Line size={30} color="white" />}
+    <>
+      <div className="chatbot-bubble" onClick={toggleChat} aria-label="Ouvrir le chat">
+        💬
+      </div>
 
-      {expanded && (
-        <div className="panel-all">
-          <div className="panel-all-top">
-            <AiOutlineArrowLeft
-              size={30}
-              className="LeftArrow"
-              onClick={() => setExpanded(false)}
-            />
-            <p className="empty-panel">Robot conversationnel</p>
-          </div>
-
-          <div className="panel-container">
-            <div className="panel-messages">
-              {conversation.length > 0 ? (
-                conversation.map((message, index) => {
-                  const time = calculateTime(message.timestamp);
-                  if (message.content) {
-                    return message.sender === "user" ? (
-                      <FirstUser
-                        key={index}
-                        message={message.content}
-                        timestamp={message.timestamp}
-                        time={time}
-                        robot={true}
-                      />
-                    ) : (
-                      <SecondUser
-                        key={index}
-                        message={message.content}
-                        timestamp={message.timestamp}
-                        time={time}
-                        robot={true}
-                      />
-                    );
-                  }
-                  return null;
-                })
-              ) : (
-                <div className="chat-placeholder">
-                  <FaComments size={200} className="chat-placeholder-icon" />
-                  <p>Écrire une chose pour commencer la conversation</p>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-
-            <div className="chat-bottom">
-              <input
-                className="panel-input"
-                type="text"
-                value={message}
-                placeholder="Enter a prompt here"
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSendMessage(1);
-                  }
-                }}
-              />
-              <div className="panel-icons-right">
-                <FaArrowUp
-                  className="panel-icon-arrow"
-                  onClick={() => {
-                    handleSendMessage(1);
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+      <div className={`chatbot-window ${isOpen ? 'open' : ''}`} aria-live="polite">
+        <div className="chatbot-header">
+          <span>BIZ Support</span>
+          <button className="close-btn" onClick={toggleChat} aria-label="Fermer">×</button>
         </div>
-      )}
-    </div>
+
+        <div className="chatbot-messages">
+          {messages.map((msg, idx) => (
+            <div key={idx} className={`chat-message ${msg.from}`}>
+              {/* Découpe en lignes et détecte numéro + sous-titre + texte */}
+              {msg.text.split('\n').map((line, i) => {
+                const cleanLine = line.replace(/\*\*/g, '');
+                // Regex : numéro + sous-titre + texte
+                const match = cleanLine.match(/^(\d+[\.-])\s+([^:]+:\s*)(.*)$/);
+                if (match) {
+                  const number = match[1];
+                  const subtitle = match[2];
+                  const rest = match[3];
+                  return (
+                    <div key={i} className="chat-line">
+                      <span className="chat-line-number">{number} </span>
+                      <strong className="chat-line-subtitle">{subtitle}</strong>
+                      <span className="chat-line-text">{rest}</span>
+                    </div>
+                  );
+                }
+                // Si ligne avec seulement numéro + texte sans sous-titre (optionnel)
+                const matchSimple = cleanLine.match(/^(\d+[\.-])\s*(.*)$/);
+                if (matchSimple) {
+                  const number = matchSimple[1];
+                  const rest = matchSimple[2];
+                  return (
+                    <div key={i} className="chat-line">
+                      <strong className="chat-line-number">{number}</strong>
+                      <span className="chat-line-text">{rest}</span>
+                    </div>
+                  );
+                }
+                // Sinon ligne simple
+                return <div key={i} className="chat-line">{cleanLine}</div>;
+              })}
+            </div>
+          ))}
+
+          {isLoading && (
+            <div className="chat-message bot loading-dots">
+              <span>.</span><span>.</span><span>.</span>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="chatbot-input">
+          <input
+            type="text"
+            placeholder="Tapez votre message..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={isLoading}
+            aria-label="Votre question"
+          />
+          <button onClick={sendMessage} disabled={isLoading} aria-label="Envoyer">
+            {isLoading ? '...' : 'Envoyer'}
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
 
-export default ChatBot;
+export default Chatbot;

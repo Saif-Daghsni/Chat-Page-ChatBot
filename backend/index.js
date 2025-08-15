@@ -10,6 +10,8 @@ import verifyToken from "./Middlewares/Auth.js";
 import Conversation from "./Models/Conversation.js";
 import { WebSocketServer } from "ws";
 import http from "http";
+import chatbotRouter from "./Routes/chatbotRoute.js";
+
 
 // Initialize Express app
 const app = express();
@@ -273,9 +275,10 @@ app.get("/api/online-status/:userId", (req, res) => {
   res.json({ online: onlineUsers.has(req.params.userId) });
 });
 
+app.use('/api/chatbot', chatbotRouter);
+
 // Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
-  console.log(`✅ WebSocket server running on ws://localhost:${PORT}`);
 });
