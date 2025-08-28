@@ -93,16 +93,6 @@ const Chat_Page = () => {
 
               <div className="divs">
                 <div className="users">
-                  {user && (
-                    <User
-                      setSelecteduser={setSelecteduser}
-                      users={users}
-                      user={user}
-                      selecteduser={selecteduser}
-                      message={message}
-                      getmessage={getmessage}
-                    />
-                  )}
                 </div>
 
                 <div className="chat">
