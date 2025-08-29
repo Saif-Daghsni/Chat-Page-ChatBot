@@ -81,7 +81,7 @@ const Chat_Page = () => {
   }
   return (
     <Layout>
-      {/* <ChatBot user={user} /> */}
+      <ChatBot user={user} />
       <ToastContainer position="bottom-right" />
       <div>
         <div className="topBar"></div>

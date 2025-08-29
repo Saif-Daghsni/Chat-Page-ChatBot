@@ -123,20 +123,30 @@ app.get("/me", verifyToken, async (req, res) => {
 
 app.put("/addOrder/:userId", async (req, res) => {
   try {
+    console.log("📥 Body received:", req.body);
+    console.log("📥 Params received:", req.params);
+
     const updatedUser = await User.findByIdAndUpdate(
       req.params.userId,
       { $push: { orders: req.body } },
       { new: true }
     );
-    if (!updatedUser)
+
+    if (!updatedUser) {
+      console.log("❌ User not found");
       return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("✅ Order added:", req.body);
     res
       .status(200)
       .json({ message: "Order added successfully", user: updatedUser });
   } catch (error) {
+    console.error("❌ Server error:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
 
 app.delete("/deleteOrder/:userId/:orderId", async (req, res) => {
   try {
@@ -176,14 +186,17 @@ app.put("/updateOrder/:userId/:orderId", async (req, res) => {
 
 app.post("/conversations", verifyToken, async (req, res) => {
   const { members, messages } = req.body;
+
   if (!members || !Array.isArray(members) || members.length !== 2) {
     return res.status(400).json({ error: "Invalid members array" });
   }
+
   try {
     const sortedMembers = [...members].sort();
     let conversation = await Conversation.findOne({
-      members: { $all: sortedMembers },
+      members: { $all: sortedMembers, $size: 2 },
     });
+
     if (conversation) {
       conversation.messages.push(messages[0]);
       await conversation.save();
@@ -193,11 +206,14 @@ app.post("/conversations", verifyToken, async (req, res) => {
         messages,
       });
     }
+
     res.status(200).json(conversation);
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    console.error("❌ Error saving conversation:", error);
+    res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get("/GetConversations", verifyToken, async (req, res) => {
   try {

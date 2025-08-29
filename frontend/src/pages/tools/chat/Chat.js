@@ -11,22 +11,23 @@ import ShowOrder from "./ShowOrder";
 
 const Chat = (props) => {
   const [image, setImage] = useState("");
-  const [refreshTime, setRefreshTime] = useState(false); 
+  const [refreshTime, setRefreshTime] = useState(false);
   const messagesEndRef = useRef(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(false); // new state
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setRefreshTime((prev) => !prev); 
-    }, 60000); 
+      setRefreshTime((prev) => !prev);
+    }, 60000);
 
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval);
   }, []);
 
   const handleSendMessage = (e) => {
     if (e === 1 && props.message.trim() === "") {
       return handleError("Le message est vide");
     }
-    if(props.selecteduser === null || props.selecteduser.length === 0) {
+    if (props.selecteduser === null || props.selecteduser.length === 0) {
       return handleError("Veuillez sélectionner un utilisateur");
     }
 
@@ -58,6 +59,9 @@ const Chat = (props) => {
             return handleError(data.error);
           }
           props.setMessage("");
+
+          setImage(""); // clear image after sending
+          setRefreshTrigger((prev) => !prev); // 🔥 force useEffect to re-run
         })
         .catch((err) => {
           console.error("Error sending message:", err);
@@ -123,11 +127,11 @@ const Chat = (props) => {
 
   useEffect(() => {
     props.fetchMessages();
-  }, [props.selecteduser, props.message]);
+  }, [props.selecteduser, props.message, refreshTrigger]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
-  }, [props.getmessage, props.selecteduser, refreshTime]); 
+  }, [props.getmessage, props.selecteduser, refreshTime]);
 
   return (
     <div className="chat-all">
@@ -173,7 +177,7 @@ const Chat = (props) => {
                           time={time}
                           isRead={message.isRead}
                           selecteduser={props.selecteduser}
-                        robot={false}
+                          robot={false}
                         />
                       ) : (
                         <SecondUser
@@ -183,7 +187,7 @@ const Chat = (props) => {
                           time={time}
                           isRead={message.isRead}
                           selecteduser={props.selecteduser}
-                        robot={false}
+                          robot={false}
                         />
                       );
                     } else if (

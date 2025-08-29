@@ -14,7 +14,7 @@ const orderSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["Achat", "Vente", "Matières premières", "Emballage"],
+    enum: ["Achat", "Vente", "Matières premières", "Emballage", "Produits fini","Machines"],
   },
   gamme: {
     type: String,

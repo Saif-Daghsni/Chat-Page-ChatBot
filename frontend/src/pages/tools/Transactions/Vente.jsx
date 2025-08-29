@@ -146,10 +146,16 @@ const Vente = (props) => {
     }
   };
   const handleAddOrder = async () => {
+
     const newOrder = {
-      content: message ,
-      timestamp: Date.now(),
-      sender:"user",
+      title: props.title,
+      type: type?.value || "", 
+      gamme: gamme?.value || "",
+      quantite: quantite,
+      prix: prix,
+      prixNego: prixNego,
+      quantiteNego: quantiteNego,
+      date: Date.now(),
     };
 
     try {

@@ -68,6 +68,7 @@ const Share = (props) => {
 
     handleSuccess("Messages envoyés avec succès");
   };
+  
   useEffect(() => {
     props.fetchMessages();
   }, [props.selecteduser, props.message]);

@@ -28,6 +28,8 @@ const Consulter = (props) => {
 
     const newMessage = {
       senderId: props.currentUser._id,
+
+      content: "Message d'un ordre",
       order: Theorder,
     };
 
@@ -35,6 +37,9 @@ const Consulter = (props) => {
       members: [props.user._id, props.currentUser._id],
       messages: [newMessage],
     };
+
+    console.log("MessageDetails:", MessageDetails);
+
     try {
       fetch("http://localhost:5000/conversations", {
         method: "POST",
@@ -49,7 +54,9 @@ const Consulter = (props) => {
           if (data.error) {
             return handleError(data.error);
           }
-          // fetchMessages(); *********************************************************
+
+          props.fetchMessages();
+
           handleSuccess("Message envoyé avec succès");
         })
         .catch((err) => {

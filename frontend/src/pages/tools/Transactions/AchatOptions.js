@@ -122,6 +122,9 @@ const AchatOptions = (props) => {
           OwnerOrderName={props.user.name}
           OwnerOrderId={props.user._id}
           currentUser={props.currentUser}
+          fetchMessages={props.fetchMessages}
+          
+            setMessage={props.setMessage}
         />
       )}
 
