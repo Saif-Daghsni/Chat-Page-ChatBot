@@ -30,7 +30,9 @@ Intelligent chatbot capable of answering R&D-related queries
 
 Fuzzy search to handle spelling errors and query variations
 
-the demo video : https://drive.google.com/file/d/1rkAEKUGIVvjAS0YbQQf-NxbAxrhOsCC1/view?usp=drive_link
+🔗 The demo video : https://drive.google.com/file/d/1rkAEKUGIVvjAS0YbQQf-NxbAxrhOsCC1/view?usp=drive_link
+
+🔗 The repport: https://lnkd.in/eJzbr48Q
 
 Integration of external AI model for flexible and accurate responses
 
