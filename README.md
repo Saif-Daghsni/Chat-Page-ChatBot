@@ -12,15 +12,15 @@ Chatbot Integration: Developed a smart assistant for the R&D department, combini
 
 ## 🔧 Technologies & Tools
 
-Frontend: React.js
+**Frontend**: React.js
 
-Backend: Node.js + Express.js
+**Backend**: Node.js + Express.js
 
-Database: MongoDB (with MongoDB Compass for management)
+**Database**: MongoDB (with MongoDB Compass for management)
 
-Design & Collaboration: Figma, Git, GitHub
+**Design & Collaboration**: Figma, Git, GitHub
 
-Other tools: Visual Studio Code, Fuse.js, API integration for AI
+**Other tools**: Visual Studio Code, Fuse.js, API integration for AI
 
 ---
 
