@@ -38,7 +38,7 @@ Fuzzy search to handle spelling errors and query variations
 
 ▶️ [Watch the demo video](https://drive.google.com/file/d/1rkAEKUGIVvjAS0YbQQf-NxbAxrhOsCC1/view?usp=drive_link)
 
-📖[Read the report](https://lnkd.in/eJzbr48Q)
+📖[Read the report](https://lnkd.in/eJzbr48Q](https://drive.google.com/file/d/1Zoe83P7liyG_8rxMZWSsp2wW58750ZQx/view?usp=drive_link)
 
 
 ---
