@@ -8,7 +8,9 @@ Interactive Web Application: Designed and built a platform that enables real-tim
 
 Chatbot Integration: Developed a smart assistant for the R&D department, combining a FAQ-based knowledge base with Fuse.js for fuzzy search and an AI-powered API (Mistral-7B-Instruct) for dynamic responses.
 
-🔧 Technologies & Tools
+---
+
+##🔧 Technologies & Tools
 
 Frontend: React.js
 
@@ -20,7 +22,9 @@ Design & Collaboration: Figma, Git, GitHub
 
 Other tools: Visual Studio Code, Fuse.js, API integration for AI
 
-🚀 Key Features
+---
+
+##🚀 Key Features
 
 Real-time chat interface with text, images, and transaction commands
 
@@ -30,9 +34,13 @@ Intelligent chatbot capable of answering R&D-related queries
 
 Fuzzy search to handle spelling errors and query variations
 
+---
+
 🔗 The demo video : https://drive.google.com/file/d/1rkAEKUGIVvjAS0YbQQf-NxbAxrhOsCC1/view?usp=drive_link
 
 🔗 The repport: https://lnkd.in/eJzbr48Q
+
+---
 
 Integration of external AI model for flexible and accurate responses
 
