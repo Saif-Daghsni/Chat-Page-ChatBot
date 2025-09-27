@@ -40,7 +40,6 @@ Fuzzy search to handle spelling errors and query variations
 
 📖[Read the report](https://lnkd.in/eJzbr48Q)
 
----
 
 ---
 
