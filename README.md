@@ -10,7 +10,7 @@ Chatbot Integration: Developed a smart assistant for the R&D department, combini
 
 ---
 
-##🔧 Technologies & Tools
+## 🔧 Technologies & Tools
 
 Frontend: React.js
 
@@ -24,7 +24,7 @@ Other tools: Visual Studio Code, Fuse.js, API integration for AI
 
 ---
 
-##🚀 Key Features
+## 🚀 Key Features
 
 Real-time chat interface with text, images, and transaction commands
 
@@ -36,9 +36,11 @@ Fuzzy search to handle spelling errors and query variations
 
 ---
 
-🔗 The demo video : https://drive.google.com/file/d/1rkAEKUGIVvjAS0YbQQf-NxbAxrhOsCC1/view?usp=drive_link
+▶️ [Watch the demo video](https://drive.google.com/file/d/1rkAEKUGIVvjAS0YbQQf-NxbAxrhOsCC1/view?usp=drive_link)
 
-🔗 The repport: https://lnkd.in/eJzbr48Q
+📖[Read the report](https://lnkd.in/eJzbr48Q)
+
+---
 
 ---
 
